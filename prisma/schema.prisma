@@ -12,30 +12,47 @@ datasource db {
 
 model User {
   id String @id @default(uuid())
+  age Int
   name String
   email String
   isAdmin Boolean
-  preferences String // or Json type
+  // preferences String // or Json type
   writtenPosts Post[] @relation("WrittenPosts")
   favoritePosts Post[] @relation("FavoritePosts")
+  userPreference UserPreference?
+
+  @@unique([age, name]) // @@ - block level attribute, age and name are unique
+  @@index([email])
+}
+
+model UserPreference {
+  id String @id @default(uuid())
+  emailUpdates Boolean
+  user User @relation(fields: [userId], references: [id])
+  userId String @unique // imperative for OTO relationships
+
 }
 
 // OTM User <=> Post
 model Post {
   id String @id @default(uuid())
-  rating Float
-  createdAt DateTime
-  updatedAt DateTime
+  title String
+  averageRating Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt // automatically updates when changed
   author User @relation("WrittenPosts", fields: [authorId], references: [id]) // Post (the 'many' model) contains userId, foreign key references 'id' in User
   authorId String
   favoritedBy User? @relation("FavoritePosts", fields: [favoritedById], references: [id])
   favoritedById String?
   categories Category[] // references category model*
+
+  // @@id([title, authorId]) - optional block
 }
 
 // MTM Post <=> Category
 model Category {
   id String @id @default(uuid())
+  name String @unique
   posts Post[] // requires an opposite relationship statement on Post*
 }
 
