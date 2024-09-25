@@ -6,23 +6,19 @@ const prisma = new PrismaClient()
 
 async function main() {
     await prisma.user.deleteMany() // deletes old version of db for this project, avoids conflicting with new users created
-    const user = await prisma.user.create({
-        data: {
+    const user = await prisma.user.createMany({
+        data: [{
             name: "Jane",
             email: "jane@test.com",
             age: 27,
-            userPreference: {
-                create: {
-                    emailUpdates: true,
-                },
-            },
-        },
-        select: {
-            name: true, 
-            userPreference: { select: { id: true }},
-        },
+        }, {
+            name: "Sally",
+            email: "sally@test.com",
+            age: 32,
+        }],
+        
         // select OR include - not both 
-        // select collects more specific data
+        // select collects more specific data; select doesn't run with .createMany()
 
         // include: {
         //     userPreference: true,
