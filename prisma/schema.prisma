@@ -15,13 +15,12 @@ model User {
   age Int
   name String
   email String
-  isAdmin Boolean
-  // preferences String // or Json type
+  // role Role @default(BASIC) // * new *
   writtenPosts Post[] @relation("WrittenPosts")
   favoritePosts Post[] @relation("FavoritePosts")
   userPreference UserPreference?
 
-  @@unique([age, name]) // @@ - block level attribute, age and name are unique
+  @@unique([age, name]) 
   @@index([email])
 }
 
@@ -45,8 +44,6 @@ model Post {
   favoritedBy User? @relation("FavoritePosts", fields: [favoritedById], references: [id])
   favoritedById String?
   categories Category[] // references category model*
-
-  // @@id([title, authorId]) - optional block
 }
 
 // MTM Post <=> Category
@@ -56,10 +53,17 @@ model Category {
   posts Post[] // requires an opposite relationship statement on Post*
 }
 
+// enum Role {
+//   BASIC
+//   ADMIN
+// }
+
 // Notes:
 // add labels to each of the models in a relationship - easier to read
 // i.e. @relation("WrittenPosts")
 // Added to each of the 2
+
+  // @@id([title, authorId]) - optional block
 
   // rating Decimal // represents a wiser range of floats
 
