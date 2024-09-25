@@ -1,0 +1,16 @@
+npm init -y
+npm i typescript ts-node @types/node -devnpx tsc --initnpm i prisma -dev
+// for sql db:
+npx prisma init --datasource-provider sqlite
+
+* Create models and relationships in schema.prisma *
+* Create index.ts - main TS file for CRUD operations *
+
+Migrate
+npx prisma migrate dev --name init
+
+Connect to prisma client
+npx prisma generate
+
+Run terminal
+npx ts-node index.ts

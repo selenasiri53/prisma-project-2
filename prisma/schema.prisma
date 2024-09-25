@@ -18,7 +18,8 @@ model User {
   // role Role @default(BASIC) // * new *
   writtenPosts Post[] @relation("WrittenPosts")
   favoritePosts Post[] @relation("FavoritePosts")
-  userPreference UserPreference?
+  userPreference UserPreference? @relation(fields: [userPreferenceId], references: [id])
+  userPreferenceId String? @unique // imperative for OTO relationships
 
   @@unique([age, name]) 
   @@index([email])
@@ -27,9 +28,7 @@ model User {
 model UserPreference {
   id String @id @default(uuid())
   emailUpdates Boolean
-  user User @relation(fields: [userId], references: [id])
-  userId String @unique // imperative for OTO relationships
-
+  user User?
 }
 
 // OTM User <=> Post

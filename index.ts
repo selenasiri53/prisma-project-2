@@ -1,12 +1,28 @@
-import { PrismaClient } from '@prisma/client'
-
+// CRUD
+import { PrismaClient } from '@prisma/client' // prisma connection 
 const prisma = new PrismaClient()
-
-// prisma.user.findFirst
+// generate prisma client by running: 
+// $ npx prisma generate
 
 async function main() {
-    const users = prisma.user.findMany()
-    console.log(users)
+    await prisma.user.deleteMany() // deletes old version of db for this project, avoids conflicting with new users created
+    const user = await prisma.user.create({
+        data: {
+            name: "Jane",
+            email: "jane@test.com",
+            age: 27,
+            userPreference: {
+                create: {
+                    emailUpdates: true,
+                },
+            },
+        },
+        include: {
+            userPreference: true,
+        },
+    })
+
+    console.log(user)
 }
 
 main() 
