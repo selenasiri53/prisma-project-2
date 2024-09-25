@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id String @id @default(uuid())
+  name String
+  email String
+  isAdmin Boolean
+  preferences String // or Json type
+  writtenPosts Post[] @relation("WrittenPosts")
+  favoritePosts Post[] @relation("FavoritePosts")
+}
+
+// OTM User <=> Post
+model Post {
+  id String @id @default(uuid())
+  rating Float
+  createdAt DateTime
+  updatedAt DateTime
+  author User @relation("WrittenPosts", fields: [authorId], references: [id]) // Post (the 'many' model) contains userId, foreign key references 'id' in User
+  authorId String
+  favoritedBy User? @relation("FavoritePosts", fields: [favoritedById], references: [id])
+  favoritedById String?
+  categories Category[] // references category model*
+}
+
+// MTM Post <=> Category
+model Category {
+  id String @id @default(uuid())
+  posts Post[] // requires an opposite relationship statement on Post*
+}
+
+// Notes:
+// add labels to each of the models in a relationship - easier to read
+// i.e. @relation("WrittenPosts")
+// Added to each of the 2
+
+  // rating Decimal // represents a wiser range of floats
+
+  // Additional dt's
+  // largeNumber BigInt
+  // blob Bytes 
+  // blobx Unsupported("")
