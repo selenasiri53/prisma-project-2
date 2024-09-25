@@ -17,9 +17,16 @@ async function main() {
                 },
             },
         },
-        include: {
-            userPreference: true,
+        select: {
+            name: true, 
+            userPreference: { select: { id: true }},
         },
+        // select OR include - not both 
+        // select collects more specific data
+
+        // include: {
+        //     userPreference: true,
+        // },
     })
 
     console.log(user)
